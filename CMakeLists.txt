@@ -112,14 +112,11 @@ if(paraview)
   endif()
 endif()
 
-# paraview version 5.5 (MacOS) does not contain TBB
-if (APPLE OR (NOT paraview OR NOT ${ParaView_FOUND}))
-  find_package(TBB REQUIRED)
-  if (TBB_FOUND)
-    include_directories(${TBB_INCLUDE_DIRS})
-    link_directories(${TBB_LIBRARIES})
-    set(BDM_REQUIRED_LIBRARIES ${BDM_REQUIRED_LIBRARIES} ${TBB_LIBRARIES})
-  endif()
+find_package(TBB REQUIRED)
+if (TBB_FOUND)
+  include_directories(${TBB_INCLUDE_DIRS})
+  link_directories(${TBB_LIBRARIES})
+  set(BDM_REQUIRED_LIBRARIES ${BDM_REQUIRED_LIBRARIES} ${TBB_LIBRARIES})
 endif()
 
 find_package(VTune)
@@ -296,8 +293,8 @@ if (test)
   if (NOT coverage)
     if(OPENCL_FOUND OR CUDA_FOUND)
       bdm_add_executable(cell_division_gpu
-                         SOURCES test/system/cell_division_gpu.cc
-                         HEADERS test/system/cell_division_gpu.h
+                         SOURCES test/system/cell_division_gpu/src/cell_division_gpu.cc
+                         HEADERS test/system/cell_division_gpu/src/cell_division_gpu.h
                          LIBRARIES biodynamo)
       add_dependencies(check cell_division_gpu)
       add_test(NAME "system-cell-division-gpu"
